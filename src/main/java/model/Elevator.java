@@ -5,15 +5,16 @@ public class Elevator {
 
     // Variables
 
+    private int id;
     private int currentFloor;
-
 
 
 
     // Constructor
 
-    public Elevator() {
+    public Elevator(int id) {
         this.currentFloor = 0;
+        this.id = id;
 
 
     }
@@ -35,4 +36,7 @@ public class Elevator {
     }
 
 
+    public int getId() {
+        return id;
+    }
 }
