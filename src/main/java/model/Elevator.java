@@ -5,8 +5,9 @@ public class Elevator {
 
     // Variables
 
-    private int id;
+    private final int id;
     private int currentFloor;
+    private boolean isAvailable = true;
 
 
 
@@ -15,11 +16,10 @@ public class Elevator {
     public Elevator(int id) {
         this.currentFloor = 0;
         this.id = id;
-
-
     }
 
     // Methods
+
 
     public void moveUp() {
         this.currentFloor++;
@@ -38,5 +38,13 @@ public class Elevator {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 }
