@@ -2,16 +2,17 @@ import model.Elevator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class System {
+public class ElevatorService {
 
 
     // Variables
 
-    int numberOfElevators = 7;
+    private final int numberOfElevators = 7;
+    private final int highestFloor = 55;
+    private final int lowestFloor = 0;
     List<Elevator> elevatorList;
-    private int highestFloor = 55;
-    private int lowestFloor = 0;
 
 
 
@@ -21,10 +22,13 @@ public class System {
     public static void main(String[] args) {
 
         // Set-Up
-        System elevatorSim = new System();
+        ElevatorService elevatorSim = new ElevatorService();
         elevatorSim.setUp();
 
-
+        // Test
+        int available = elevatorSim.checkAvailableElevators();
+        elevatorSim.addRequest(0, 55);
+        System.out.println("There are " + available + " elevators available");
 
     }
 
@@ -38,14 +42,18 @@ public class System {
         }
     }
 
-
-    public void addRequest(int currentFloor, int destinationFloor, boolean movesDown) {
+    /*
+    Core Functionality:
+    This method handles new elevator requests
+    @param  currentFloor        departure floor
+    @param  destinationFloor    arrival floor
+    */
+    public void addRequest(int currentFloor, int destinationFloor) {
 
         // Check if request is valid
         if(!requestIsValid(currentFloor, destinationFloor)) {
             return;
         }
-
 
         // Search for the most efficient elevator
         Elevator bestElevator = searchBestElevator(currentFloor);
@@ -54,6 +62,7 @@ public class System {
         bestElevator.setAvailable(false);
 
         // Send Elevator to currentFloor
+
         if(bestElevator.getCurrentFloor() != currentFloor) {
             sendElevator(bestElevator, currentFloor);
         }
@@ -64,8 +73,7 @@ public class System {
 
         // Mark Elevator available
         bestElevator.setAvailable(true);
-
-
+        
     }
 
     /*
@@ -101,17 +109,80 @@ public class System {
         return true;
     }
 
-    // TODO: The search algorithm is the core subject of this coding challenge
-    private Elevator searchBestElevator(int currentFloor) {
+    /*
+    The search algorithm is the core subject of this coding challenge
+    @param currentFloor     The departure floor of the request
+    @return                 The most efficient elevator to handle the request
+
+     */
+    // TODO: I have to split this up
+    private Elevator searchBestElevator(int departureFloor) {
+
+        // Check if an elevator is ready
+        Elevator readyToGo = readyToGo(departureFloor);
+        if(readyToGo != null) {
+            return readyToGo;
+        }
+
+        List<Elevator> availableElevators = getAvailableElevators();
+        // If only 1 elevator is available, choose it
+        if(availableElevators.size() == 1) {
+            return availableElevators.get(0);
+        }
+
+        // TODO: if no elevator is available closestElevator will be null!
+        return getClosestElevator(availableElevators,departureFloor);
+    }
+
+
+    private Elevator readyToGo(int departureFloor) {
+
         // Check if an elevator is standing in this floor
+        for (Elevator elevator : elevatorList) {
+            if (elevator.getCurrentFloor() == departureFloor) {
+                return elevator;
+            }
+        }
 
-        // Check if an elevator is moving towards this floor, if more than 1 - which is first?
-
-        // Check which elevators are without Job, if more than 1 - which is closest?
-
-        // Which elevator is the next without job?
 
         return null;
+    }
+
+    private List<Elevator> getAvailableElevators() {
+
+        // Check which elevators are without Job,
+        List<Elevator> availableElevators = new ArrayList<>();
+        for (Elevator elevator : elevatorList) {
+            if (elevator.isAvailable()) {
+                availableElevators.add(elevator);
+            }
+        }
+
+        return availableElevators;
+    }
+
+    private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
+
+        Elevator closestElevator = null;
+        int bestDistance = highestFloor;
+        for(Elevator elevator : availableElevators) {
+            int distance;
+            int elevatorPosition = elevator.getCurrentFloor();
+            if(elevatorPosition < departureFloor) {
+                distance = departureFloor - elevatorPosition;
+            }
+            else {
+                distance = elevatorPosition - departureFloor;
+            }
+            if(distance < bestDistance) {
+                closestElevator = elevator;
+                bestDistance = distance;
+            }
+
+        }
+        return closestElevator;
+
+
     }
 
     /*
@@ -122,6 +193,11 @@ public class System {
     TODO: Not sure if I should reuse the name destinationFloor
      */
 
+    /**
+     *
+     * @param elevator
+     * @param destinationFloor
+     */
     private void sendElevator(Elevator elevator, int destinationFloor) {
 
 
