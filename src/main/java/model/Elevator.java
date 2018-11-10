@@ -20,7 +20,7 @@ public class Elevator {
 
     // Methods
 
-
+    //TODO: When using threads add a delay to simulate movement
     public void moveUp() {
         this.currentFloor++;
     }
