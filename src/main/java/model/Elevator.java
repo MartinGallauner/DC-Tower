@@ -1,5 +1,7 @@
 package model;
 
+import java.util.concurrent.TimeUnit;
+
 public class Elevator {
 
 
@@ -21,12 +23,12 @@ public class Elevator {
     // Methods
 
     //TODO: When using threads add a delay to simulate movement
-    public void moveUp() {
+    public void moveUp(){
         this.currentFloor++;
     }
 
 
-    public void moveDown() {
+    public void moveDown()  {
         this.currentFloor--;
     }
 

@@ -2,16 +2,19 @@ import model.Elevator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
+
 
 public class ElevatorService {
 
-
-    // Variables
 
     private final int numberOfElevators = 7;
     private final int highestFloor = 55;
     private final int lowestFloor = 0;
     private List<Elevator> elevatorList;
+    private ExecutorService threadPool = Executors.newFixedThreadPool(7);
+
+
 
 
     public ElevatorService() {
@@ -19,14 +22,49 @@ public class ElevatorService {
     }
 
 
-    // Methods
-
-
     public static void main(String[] args) {
-
         ElevatorService elevatorService = new ElevatorService();
+        ExecutorService threadPool = Executors.newFixedThreadPool(7);
+        System.out.println(elevatorService.checkAvailableElevators());
+
+        elevatorService.addRequest(0,55);
+        elevatorService.addRequest(0,55);
+        elevatorService.addRequest(0,55);
+        elevatorService.addRequest(0,55);
+        System.out.println(elevatorService.checkAvailableElevators());
+
+        threadPool.shutdown();
+    }
 
 
+
+
+    /**
+     * Handles new request
+     * @param currentFloor Departure floor of the elevator request
+     * @param destinationFloor Destination of the elevator request
+     */
+    public void addRequest(int currentFloor, int destinationFloor) {
+
+        //TODO: this should throw an exception
+        if(!requestIsValid(currentFloor, destinationFloor)) {
+            return;
+        }
+
+        Runnable thisTask = () -> {
+            Elevator bestElevator = searchBestElevator(currentFloor);
+
+            bestElevator.setAvailable(false);
+            if(bestElevator.getCurrentFloor() != currentFloor) {
+                sendElevator(bestElevator, currentFloor);
+            }
+
+            // TODO: When using Threads, wait until the elevator is there
+            sendElevator(bestElevator, destinationFloor);
+            bestElevator.setAvailable(true);
+        };
+
+        threadPool.execute(thisTask);
     }
 
 
@@ -37,29 +75,6 @@ public class ElevatorService {
             elevatorList.add(new Elevator(i));
             i++;
         }
-    }
-
-    /**
-     * Handles new request
-     * @param currentFloor Departure floor of the elevator request
-     * @param destinationFloor Destination of the elevator request
-     */
-    public void addRequest(int currentFloor, int destinationFloor) {
-
-        if(!requestIsValid(currentFloor, destinationFloor)) {
-            return;
-        }
-
-        Elevator bestElevator = searchBestElevator(currentFloor);
-
-        bestElevator.setAvailable(false);
-        if(bestElevator.getCurrentFloor() != currentFloor) {
-            sendElevator(bestElevator, currentFloor);
-        }
-
-        // TODO: When using Threads, wait until the elevator is there
-        sendElevator(bestElevator, destinationFloor);
-        bestElevator.setAvailable(true);
     }
 
 
@@ -116,6 +131,7 @@ public class ElevatorService {
 
 
     private List<Elevator> getAvailableElevators() {
+
         List<Elevator> availableElevators = new ArrayList<>();
         for (Elevator elevator : elevatorList) {
             if (elevator.isAvailable()) {
@@ -149,13 +165,24 @@ public class ElevatorService {
 
     }
 
-
+    //TODO: The try/catch block is ugly as hell
     private void sendElevator(Elevator elevator, int destinationFloor) {
         if(elevator.getCurrentFloor() < destinationFloor) {
             sendUp(elevator, destinationFloor);
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         else {
             sendDown(elevator, destinationFloor);
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
