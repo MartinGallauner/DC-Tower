@@ -1,7 +1,7 @@
 package model;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
+
 
 public class Elevator {
 
@@ -23,6 +23,7 @@ public class Elevator {
 
     // Methods
 
+
     //TODO: When using threads add a delay to simulate movement
     public void moveUp(){
         transitTime();
@@ -37,7 +38,7 @@ public class Elevator {
 
     private void transitTime() {
         try {
-            TimeUnit.MILLISECONDS.sleep(5000);
+            TimeUnit.SECONDS.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -59,5 +60,14 @@ public class Elevator {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Elevator{" +
+                "id=" + id +
+                ", currentFloor=" + currentFloor +
+                ", isAvailable=" + isAvailable +
+                '}';
     }
 }

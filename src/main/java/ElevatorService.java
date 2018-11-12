@@ -65,6 +65,7 @@ public class ElevatorService {
     private void setUp() {
         elevatorList = new ArrayList<>();
         int i = 1;
+
         while(i <= numberOfElevators) {
             elevatorList.add(new Elevator(i));
             i++;
@@ -78,6 +79,7 @@ public class ElevatorService {
      */
     public int checkAvailableElevators() {
         int availableElevators = 0;
+
         for(Elevator elevator : elevatorList) {
             if(elevator.isAvailable() == true) {
                 availableElevators++;
@@ -88,33 +90,58 @@ public class ElevatorService {
 
 
     private boolean requestIsValid(int currentFloor, int destinationFloor) {
-
         if (currentFloor < lowestFloor || currentFloor > highestFloor || destinationFloor < lowestFloor
                 || destinationFloor > highestFloor) {
             return false;
         }
-
         return true;
     }
 
 
+/*
+
+
+    private Elevator searchBestElevator(int departureFloor) {
+        Elevator bestElevator = null;
+        do {
+            Elevator ElevatorReadyToGo = readyToGo(departureFloor);
+            if (ElevatorReadyToGo != null) {
+                return ElevatorReadyToGo;
+            }
+
+            List<Elevator> availableElevators = getAvailableElevators();
+            if (availableElevators.size() == 1) {
+                return availableElevators.get(0);
+            }
+        } while(bestElevator == null);
+
+        // TODO: if no elevator is available closestElevator will be null!
+        return bestElevator;
+    }
+
+    */
+
+
     private Elevator searchBestElevator(int departureFloor) {
 
-        Elevator readyToGo = readyToGo(departureFloor);
-        if(readyToGo != null) {
-            return readyToGo;
+        Elevator ElevatorReadyToGo = readyToGo(departureFloor);
+        if(ElevatorReadyToGo != null) {
+            return ElevatorReadyToGo;
         }
+
         List<Elevator> availableElevators = getAvailableElevators();
         if(availableElevators.size() == 1) {
             return availableElevators.get(0);
         }
+
         // TODO: if no elevator is available closestElevator will be null!
         return getClosestElevator(availableElevators,departureFloor);
     }
 
 
-    private Elevator readyToGo(int departureFloor) {
 
+
+    private Elevator readyToGo(int departureFloor) {
         for (Elevator elevator : elevatorList) {
             if (elevator.getCurrentFloor() == departureFloor) {
                 return elevator;
@@ -125,8 +152,8 @@ public class ElevatorService {
 
 
     private List<Elevator> getAvailableElevators() {
-
         List<Elevator> availableElevators = new ArrayList<>();
+
         for (Elevator elevator : elevatorList) {
             if (elevator.isAvailable()) {
                 availableElevators.add(elevator);
@@ -138,7 +165,8 @@ public class ElevatorService {
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
         Elevator closestElevator = null;
-        int bestDistance = highestFloor;
+        int bestDistance = highestFloor+1;
+
         for(Elevator elevator : availableElevators) {
             int distance;
             int elevatorPosition = elevator.getCurrentFloor();
@@ -162,7 +190,6 @@ public class ElevatorService {
         if(elevator.getCurrentFloor() < destinationFloor) {
             sendUp(elevator, destinationFloor);
             }
-
         else {
             sendDown(elevator, destinationFloor);
         }
