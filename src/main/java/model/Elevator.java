@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 public class Elevator {
@@ -24,12 +25,22 @@ public class Elevator {
 
     //TODO: When using threads add a delay to simulate movement
     public void moveUp(){
+        transitTime();
         this.currentFloor++;
     }
 
 
     public void moveDown()  {
+        transitTime();
         this.currentFloor--;
+    }
+
+    private void transitTime() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

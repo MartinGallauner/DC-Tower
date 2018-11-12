@@ -1,5 +1,4 @@
 import model.Elevator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -7,13 +6,11 @@ import java.util.concurrent.*;
 
 public class ElevatorService {
 
-
     private final int numberOfElevators = 7;
     private final int highestFloor = 55;
     private final int lowestFloor = 0;
     private List<Elevator> elevatorList;
     private ExecutorService threadPool = Executors.newFixedThreadPool(7);
-
 
 
 
@@ -26,11 +23,9 @@ public class ElevatorService {
         ElevatorService elevatorService = new ElevatorService();
         ExecutorService threadPool = Executors.newFixedThreadPool(7);
         System.out.println(elevatorService.checkAvailableElevators());
-
         elevatorService.addRequest(0,55);
-        elevatorService.addRequest(0,55);
-        elevatorService.addRequest(0,55);
-        elevatorService.addRequest(0,55);
+        elevatorService.addRequest(1,55);
+        elevatorService.addRequest(54,0);
         System.out.println(elevatorService.checkAvailableElevators());
 
         threadPool.shutdown();
@@ -53,7 +48,6 @@ public class ElevatorService {
 
         Runnable thisTask = () -> {
             Elevator bestElevator = searchBestElevator(currentFloor);
-
             bestElevator.setAvailable(false);
             if(bestElevator.getCurrentFloor() != currentFloor) {
                 sendElevator(bestElevator, currentFloor);
@@ -143,7 +137,6 @@ public class ElevatorService {
 
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
-
         Elevator closestElevator = null;
         int bestDistance = highestFloor;
         for(Elevator elevator : availableElevators) {
@@ -161,30 +154,20 @@ public class ElevatorService {
             }
         }
         return closestElevator;
-
-
     }
 
-    //TODO: The try/catch block is ugly as hell
+
+
     private void sendElevator(Elevator elevator, int destinationFloor) {
         if(elevator.getCurrentFloor() < destinationFloor) {
             sendUp(elevator, destinationFloor);
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
 
         else {
             sendDown(elevator, destinationFloor);
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
+
 
     private void sendUp(Elevator elevator, int destinationFloor) {
         while(elevator.getCurrentFloor() < destinationFloor) {
@@ -192,11 +175,10 @@ public class ElevatorService {
         }
     }
 
+
     private void sendDown(Elevator elevator, int destinationFloor) {
         while(elevator.getCurrentFloor() > destinationFloor) {
             elevator.moveDown();
         }
     }
-
-
 }
