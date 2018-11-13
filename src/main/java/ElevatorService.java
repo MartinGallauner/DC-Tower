@@ -19,21 +19,6 @@ public class ElevatorService {
     }
 
 
-    public static void main(String[] args) {
-        ElevatorService elevatorService = new ElevatorService();
-        ExecutorService threadPool = Executors.newFixedThreadPool(7);
-        System.out.println(elevatorService.checkAvailableElevators());
-        elevatorService.addRequest(0,55);
-        elevatorService.addRequest(1,55);
-        elevatorService.addRequest(54,0);
-        System.out.println(elevatorService.checkAvailableElevators());
-
-        threadPool.shutdown();
-    }
-
-
-
-
     /**
      * Handles new request
      * @param currentFloor Departure floor of the elevator request
@@ -98,30 +83,6 @@ public class ElevatorService {
     }
 
 
-/*
-
-
-    private Elevator searchBestElevator(int departureFloor) {
-        Elevator bestElevator = null;
-        do {
-            Elevator ElevatorReadyToGo = readyToGo(departureFloor);
-            if (ElevatorReadyToGo != null) {
-                return ElevatorReadyToGo;
-            }
-
-            List<Elevator> availableElevators = getAvailableElevators();
-            if (availableElevators.size() == 1) {
-                return availableElevators.get(0);
-            }
-        } while(bestElevator == null);
-
-        // TODO: if no elevator is available closestElevator will be null!
-        return bestElevator;
-    }
-
-    */
-
-
     private Elevator searchBestElevator(int departureFloor) {
 
         Elevator ElevatorReadyToGo = readyToGo(departureFloor);
@@ -137,8 +98,6 @@ public class ElevatorService {
         // TODO: if no elevator is available closestElevator will be null!
         return getClosestElevator(availableElevators,departureFloor);
     }
-
-
 
 
     private Elevator readyToGo(int departureFloor) {
@@ -183,7 +142,6 @@ public class ElevatorService {
         }
         return closestElevator;
     }
-
 
 
     private void sendElevator(Elevator elevator, int destinationFloor) {
