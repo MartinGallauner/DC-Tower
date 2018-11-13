@@ -1,3 +1,5 @@
+package service;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +24,11 @@ public class ElevatorServiceTest {
 
     @Test
     public void testCheckAvailableElevatorsNoRequest() {
-        ElevatorService elevatorService = new ElevatorService();
         assertEquals(7, elevatorService.checkAvailableElevators());
     }
 
     @Test
     public void testElevatorServiceSingleRequest() {
-        ElevatorService elevatorService = new ElevatorService();
         elevatorService.addRequest(0, 37);
         waitForIt();
         assertEquals(6, elevatorService.checkAvailableElevators());
@@ -36,7 +36,6 @@ public class ElevatorServiceTest {
 
     @Test
     public void testElevatorServiceSmallRequest() {
-        ElevatorService elevatorService = new ElevatorService();
         elevatorService.addRequest(5, 35);
         elevatorService.addRequest(35, 0);
         waitForIt();
@@ -45,7 +44,6 @@ public class ElevatorServiceTest {
 
     @Test
     public void testElevatorServiceBigRequest() {
-        ElevatorService elevatorService = new ElevatorService();
         elevatorService.addRequest(0, 35);
         elevatorService.addRequest(5, 0);
         elevatorService.addRequest(1, 55);
@@ -63,7 +61,7 @@ public class ElevatorServiceTest {
         try {
             TimeUnit.MILLISECONDS.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 

@@ -1,3 +1,5 @@
+package service;
+
 import model.Elevator;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,15 +8,16 @@ import java.util.concurrent.*;
 
 public class ElevatorService {
 
-    private final int numberOfElevators = 7;
-    private final int highestFloor = 55;
-    private final int lowestFloor = 0;
+    private static final int NUMBER_OF_ELEVATORS = 7;
+    private static final int HIGHEST_FLOOR = 55;
+    private static final int LOWEST_FLOOR = 0;
+
     private List<Elevator> elevatorList;
-    private ExecutorService threadPool = Executors.newFixedThreadPool(7);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(NUMBER_OF_ELEVATORS);
 
     public ElevatorService() {
         elevatorList = new ArrayList<>();
-        for (int i = 1; i <= numberOfElevators; i++) {
+        for (int i = 1; i <= NUMBER_OF_ELEVATORS; i++) {
             elevatorList.add(new Elevator(i));
         }
     }
@@ -26,7 +29,6 @@ public class ElevatorService {
      */
     public void addRequest(int currentFloor, int destinationFloor) {
 
-        //TODO: this should throw an exception
         if(!requestIsValid(currentFloor, destinationFloor)) {
             return;
         }
@@ -53,7 +55,7 @@ public class ElevatorService {
         int availableElevators = 0;
 
         for(Elevator elevator : elevatorList) {
-            if(elevator.isAvailable() == true) {
+            if(elevator.isAvailable()) {
                 availableElevators++;
             }
         }
@@ -61,8 +63,8 @@ public class ElevatorService {
     }
 
     private boolean requestIsValid(int currentFloor, int destinationFloor) {
-        if (currentFloor < lowestFloor || currentFloor > highestFloor || destinationFloor < lowestFloor
-                || destinationFloor > highestFloor) {
+        if (currentFloor < LOWEST_FLOOR || currentFloor > HIGHEST_FLOOR || destinationFloor < LOWEST_FLOOR
+                || destinationFloor > HIGHEST_FLOOR) {
             return false;
         }
         return true;
@@ -86,7 +88,7 @@ public class ElevatorService {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         } while (elevator == null);
         return elevator;
@@ -114,7 +116,7 @@ public class ElevatorService {
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
         Elevator closestElevator = null;
-        int bestDistance = highestFloor+1;
+        int bestDistance = HIGHEST_FLOOR +1;
 
         for(Elevator elevator : availableElevators) {
             int distance;
