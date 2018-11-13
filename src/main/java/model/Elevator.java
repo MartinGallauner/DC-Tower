@@ -5,31 +5,19 @@ import java.util.concurrent.TimeUnit;
 
 public class Elevator {
 
-
-    // Variables
-
     private final int id;
     private int currentFloor;
     private boolean isAvailable = true;
-
-
-
-    // Constructor
 
     public Elevator(int id) {
         this.currentFloor = 0;
         this.id = id;
     }
 
-    // Methods
-
-
-    //TODO: When using threads add a delay to simulate movement
     public void moveUp(){
         transitTime();
         this.currentFloor++;
     }
-
 
     public void moveDown()  {
         transitTime();
@@ -38,27 +26,25 @@ public class Elevator {
 
     private void transitTime() {
         try {
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-
     public int getCurrentFloor() {
         return currentFloor;
     }
-
 
     public int getId() {
         return id;
     }
 
-    public boolean isAvailable() {
+    public synchronized boolean isAvailable() {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
+    public synchronized void setAvailable(boolean available) {
         isAvailable = available;
     }
 

@@ -12,12 +12,12 @@ public class ElevatorService {
     private List<Elevator> elevatorList;
     private ExecutorService threadPool = Executors.newFixedThreadPool(7);
 
-
-
     public ElevatorService() {
-        setUp();
+        elevatorList = new ArrayList<>();
+        for (int i = 1; i <= numberOfElevators; i++) {
+            elevatorList.add(new Elevator(i));
+        }
     }
-
 
     /**
      * Handles new request
@@ -31,32 +31,19 @@ public class ElevatorService {
             return;
         }
 
+        Elevator bestElevator = searchBestElevator(currentFloor);
+        bestElevator.setAvailable(false);
+
         Runnable thisTask = () -> {
-            Elevator bestElevator = searchBestElevator(currentFloor);
-            bestElevator.setAvailable(false);
             if(bestElevator.getCurrentFloor() != currentFloor) {
                 sendElevator(bestElevator, currentFloor);
             }
-
-            // TODO: When using Threads, wait until the elevator is there
             sendElevator(bestElevator, destinationFloor);
             bestElevator.setAvailable(true);
         };
 
         threadPool.execute(thisTask);
     }
-
-
-    private void setUp() {
-        elevatorList = new ArrayList<>();
-        int i = 1;
-
-        while(i <= numberOfElevators) {
-            elevatorList.add(new Elevator(i));
-            i++;
-        }
-    }
-
 
     /**
      * Counts all elevators not handling a request
@@ -73,7 +60,6 @@ public class ElevatorService {
         return availableElevators;
     }
 
-
     private boolean requestIsValid(int currentFloor, int destinationFloor) {
         if (currentFloor < lowestFloor || currentFloor > highestFloor || destinationFloor < lowestFloor
                 || destinationFloor > highestFloor) {
@@ -82,33 +68,38 @@ public class ElevatorService {
         return true;
     }
 
-
     private Elevator searchBestElevator(int departureFloor) {
+        Elevator elevator = null;
 
-        Elevator ElevatorReadyToGo = readyToGo(departureFloor);
-        if(ElevatorReadyToGo != null) {
-            return ElevatorReadyToGo;
-        }
+        do {
+            elevator = readyToGo(departureFloor);
+            if(elevator != null) {
+                return elevator;
+            }
 
-        List<Elevator> availableElevators = getAvailableElevators();
-        if(availableElevators.size() == 1) {
-            return availableElevators.get(0);
-        }
+            List<Elevator> availableElevators = getAvailableElevators();
+            if(availableElevators.size() == 1) {
+                return availableElevators.get(0);
+            }
 
-        // TODO: if no elevator is available closestElevator will be null!
-        return getClosestElevator(availableElevators,departureFloor);
+            elevator = getClosestElevator(availableElevators,departureFloor);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (elevator == null);
+        return elevator;
     }
 
-
     private Elevator readyToGo(int departureFloor) {
-        for (Elevator elevator : elevatorList) {
+        for (Elevator elevator : getAvailableElevators()) {
             if (elevator.getCurrentFloor() == departureFloor) {
                 return elevator;
             }
         }
         return null;
     }
-
 
     private List<Elevator> getAvailableElevators() {
         List<Elevator> availableElevators = new ArrayList<>();
@@ -120,7 +111,6 @@ public class ElevatorService {
         }
         return availableElevators;
     }
-
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
         Elevator closestElevator = null;
@@ -143,7 +133,6 @@ public class ElevatorService {
         return closestElevator;
     }
 
-
     private void sendElevator(Elevator elevator, int destinationFloor) {
         if(elevator.getCurrentFloor() < destinationFloor) {
             sendUp(elevator, destinationFloor);
@@ -153,17 +142,19 @@ public class ElevatorService {
         }
     }
 
-
     private void sendUp(Elevator elevator, int destinationFloor) {
         while(elevator.getCurrentFloor() < destinationFloor) {
             elevator.moveUp();
         }
     }
 
-
     private void sendDown(Elevator elevator, int destinationFloor) {
         while(elevator.getCurrentFloor() > destinationFloor) {
             elevator.moveDown();
         }
+    }
+
+    public void shutdown() {
+        threadPool.shutdown();
     }
 }
