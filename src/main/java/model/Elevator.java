@@ -24,14 +24,6 @@ public class Elevator {
         this.currentFloor--;
     }
 
-    private void transitTime() {
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
     public int getCurrentFloor() {
         return currentFloor;
     }
@@ -46,6 +38,14 @@ public class Elevator {
 
     public synchronized void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    private void transitTime() {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Override

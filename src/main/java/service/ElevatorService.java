@@ -63,6 +63,7 @@ public class ElevatorService {
     }
 
     private boolean requestIsValid(int currentFloor, int destinationFloor) {
+
         if (currentFloor < LOWEST_FLOOR || currentFloor > HIGHEST_FLOOR || destinationFloor < LOWEST_FLOOR
                 || destinationFloor > HIGHEST_FLOOR) {
             return false;
