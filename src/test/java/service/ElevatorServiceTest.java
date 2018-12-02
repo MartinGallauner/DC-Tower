@@ -52,7 +52,7 @@ public class ElevatorServiceTest {
         elevatorService.addRequest(0, 35);
         elevatorService.addRequest(0, 45);
         elevatorService.addRequest(14, 0);
-        elevatorService.addRequest(40,0);
+        elevatorService.addRequest(40, 0);
         waitForIt();
         assertEquals(0, elevatorService.checkAvailableElevators());
     }

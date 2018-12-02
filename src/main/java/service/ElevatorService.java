@@ -1,9 +1,12 @@
 package service;
 
 import model.Elevator;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 public class ElevatorService {
@@ -24,12 +27,13 @@ public class ElevatorService {
 
     /**
      * Handles new request
-     * @param currentFloor Departure floor of the elevator request
+     *
+     * @param currentFloor     Departure floor of the elevator request
      * @param destinationFloor Destination of the elevator request
      */
     public void addRequest(int currentFloor, int destinationFloor) {
-
-        if(!requestIsValid(currentFloor, destinationFloor)) {
+        if (!isRequestValid(currentFloor, destinationFloor)) {
+            // TODO consider returning a boolean or result enum to indicate success/failure/other or throw possibly throw an exception
             return;
         }
 
@@ -37,7 +41,7 @@ public class ElevatorService {
         bestElevator.setAvailable(false);
 
         Runnable thisTask = () -> {
-            if(bestElevator.getCurrentFloor() != currentFloor) {
+            if (bestElevator.getCurrentFloor() != currentFloor) {
                 sendElevator(bestElevator, currentFloor);
             }
             sendElevator(bestElevator, destinationFloor);
@@ -49,43 +53,42 @@ public class ElevatorService {
 
     /**
      * Counts all elevators not handling a request
+     *
      * @return number of all available elevators
      */
     public int checkAvailableElevators() {
         int availableElevators = 0;
 
-        for(Elevator elevator : elevatorList) {
-            if(elevator.isAvailable()) {
+        for (Elevator elevator : elevatorList) {
+            if (elevator.isAvailable()) {
                 availableElevators++;
             }
         }
         return availableElevators;
     }
 
-    private boolean requestIsValid(int currentFloor, int destinationFloor) {
-
-        if (currentFloor < LOWEST_FLOOR || currentFloor > HIGHEST_FLOOR || destinationFloor < LOWEST_FLOOR
-                || destinationFloor > HIGHEST_FLOOR) {
-            return false;
-        }
-        return true;
+    private boolean isRequestValid(int currentFloor, int destinationFloor) {
+        return currentFloor >= LOWEST_FLOOR
+                && currentFloor <= HIGHEST_FLOOR
+                && destinationFloor >= LOWEST_FLOOR
+                && destinationFloor <= HIGHEST_FLOOR;
     }
 
     private Elevator searchBestElevator(int departureFloor) {
-        Elevator elevator = null;
+        Elevator elevator;
 
         do {
             elevator = readyToGo(departureFloor);
-            if(elevator != null) {
+            if (elevator != null) {
                 return elevator;
             }
 
             List<Elevator> availableElevators = getAvailableElevators();
-            if(availableElevators.size() == 1) {
+            if (availableElevators.size() == 1) {
                 return availableElevators.get(0);
             }
 
-            elevator = getClosestElevator(availableElevators,departureFloor);
+            elevator = getClosestElevator(availableElevators, departureFloor);
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
@@ -117,18 +120,17 @@ public class ElevatorService {
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
         Elevator closestElevator = null;
-        int bestDistance = HIGHEST_FLOOR +1;
+        int bestDistance = HIGHEST_FLOOR + 1;
 
-        for(Elevator elevator : availableElevators) {
+        for (Elevator elevator : availableElevators) {
             int distance;
             int elevatorPosition = elevator.getCurrentFloor();
-            if(elevatorPosition < departureFloor) {
+            if (elevatorPosition < departureFloor) {
                 distance = departureFloor - elevatorPosition;
-            }
-            else {
+            } else {
                 distance = elevatorPosition - departureFloor;
             }
-            if(distance < bestDistance) {
+            if (distance < bestDistance) {
                 closestElevator = elevator;
                 bestDistance = distance;
             }
@@ -137,22 +139,21 @@ public class ElevatorService {
     }
 
     private void sendElevator(Elevator elevator, int destinationFloor) {
-        if(elevator.getCurrentFloor() < destinationFloor) {
+        if (elevator.getCurrentFloor() < destinationFloor) {
             sendUp(elevator, destinationFloor);
-            }
-        else {
+        } else {
             sendDown(elevator, destinationFloor);
         }
     }
 
     private void sendUp(Elevator elevator, int destinationFloor) {
-        while(elevator.getCurrentFloor() < destinationFloor) {
+        while (elevator.getCurrentFloor() < destinationFloor) {
             elevator.moveUp();
         }
     }
 
     private void sendDown(Elevator elevator, int destinationFloor) {
-        while(elevator.getCurrentFloor() > destinationFloor) {
+        while (elevator.getCurrentFloor() > destinationFloor) {
             elevator.moveDown();
         }
     }

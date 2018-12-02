@@ -1,43 +1,50 @@
 package model;
 
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-
+@ThreadSafe
 public class Elevator {
 
     private final int id;
-    private int currentFloor;
-    private boolean isAvailable = true;
+    private AtomicInteger currentFloor;
+    private AtomicBoolean isAvailable;
 
     public Elevator(int id) {
-        this.currentFloor = 0;
+        currentFloor = new AtomicInteger(0);
+        isAvailable.set(true);
         this.id = id;
     }
 
-    public void moveUp(){
+    public void moveUp() {
         transitTime();
-        this.currentFloor++;
+        // condition top floor is enforced outside this class
+        currentFloor.incrementAndGet();
     }
 
-    public void moveDown()  {
+    public void moveDown() {
         transitTime();
-        this.currentFloor--;
+        // condition lowest floor is enforced outside this class
+        currentFloor.decrementAndGet();
     }
 
     public int getCurrentFloor() {
-        return currentFloor;
+        return currentFloor.get();
     }
 
     public int getId() {
         return id;
     }
 
-    public synchronized boolean isAvailable() {
-        return isAvailable;
+    public boolean isAvailable() {
+        return isAvailable.get();
     }
 
-    public synchronized void setAvailable(boolean available) {
-        isAvailable = available;
+    public void setAvailable(boolean available) {
+        isAvailable.set(available);
     }
 
     private void transitTime() {
@@ -52,8 +59,8 @@ public class Elevator {
     public String toString() {
         return "Elevator{" +
                 "id=" + id +
-                ", currentFloor=" + currentFloor +
-                ", isAvailable=" + isAvailable +
+                ", currentFloor=" + currentFloor.get() +
+                ", isAvailable=" + isAvailable.get() +
                 '}';
     }
 }
