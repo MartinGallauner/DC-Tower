@@ -15,6 +15,7 @@ public class Elevator {
 
     public Elevator(int id) {
         currentFloor = new AtomicInteger(0);
+        isAvailable = new AtomicBoolean();
         isAvailable.set(true);
         this.id = id;
     }
