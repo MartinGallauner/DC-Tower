@@ -7,6 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ThreadSafe
+
+/**
+ * Provides a simple elevator class. To be honest I'm not sure what to write here.
+ *
+ */
 public class Elevator {
 
     private final int id;
