@@ -11,10 +11,10 @@ The best way to run this project is to run the unit tests.
 ## Recommended
 * [x] Stefan Reformat code - always format code on agreed formatting (for us Intellij default) and remove unused imports
 * [X] Stefan Review for thread safety and discuss with Martin
-* [ ] Martin Add some brief descriptive class level comments
-* [ ] Martin Add comment on algorithm on approach/idea on ElevatorService#getClosestElevator and #searchBestElevator
-* [ ] Martin to talk Stefan through the code, discuss choices and trade offs made
-* [ ] Improve test cases and use assertThat or assertJ for assertions
+* [X] Martin Add some brief descriptive class level comments
+* [X] Martin Add comment on algorithm on approach/idea on ElevatorService#getClosestElevator and #searchBestElevator
+* [X] Martin to talk Stefan through the code, discuss choices and trade offs made
+* [X] Improve test cases and use assertThat or assertJ for assertions
     * [ ] request elevator beyond lowest and highest floor
     * [ ] request when all elevators are busy
 * [ ] analyse and discuss complexities in the algorithm (O(n^2), O(n), O(1))
