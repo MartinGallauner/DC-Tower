@@ -60,6 +60,16 @@ public class ElevatorServiceTest {
         assertThat(0, is(elevatorService.checkAvailableElevators()));
     }
 
+    @Test
+    public void testElevatorOutofBounds() {
+        elevatorService.addRequest(5, 99);
+        elevatorService.addRequest(0, 100);
+        elevatorService.addRequest(-1, 19);
+        elevatorService.addRequest(-99, 999);
+        waitForIt();
+        assertThat(7, is(elevatorService.checkAvailableElevators()));
+    }
+
     private void waitForIt() {
         try {
             TimeUnit.MILLISECONDS.sleep(1000);

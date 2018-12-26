@@ -15,8 +15,8 @@ The best way to run this project is to run the unit tests.
 * [X] Martin Add comment on algorithm on approach/idea on ElevatorService#getClosestElevator and #searchBestElevator
 * [X] Martin to talk Stefan through the code, discuss choices and trade offs made
 * [X] Improve test cases and use assertThat or assertJ for assertions
-    * [ ] request elevator beyond lowest and highest floor
-    * [ ] request when all elevators are busy
+    * [X] request elevator beyond lowest and highest floor
+    * [X] request when all elevators are busy - #testElevatorServiceBigRequest
 * [ ] analyse and discuss complexities in the algorithm (O(n^2), O(n), O(1))
 
 ## Optional
