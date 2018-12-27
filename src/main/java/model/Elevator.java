@@ -1,10 +1,11 @@
 package model;
 
+import lombok.Data;
 import net.jcip.annotations.ThreadSafe;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 @ThreadSafe
 
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Provides a simple elevator class. To be honest I'm not sure what to write here.
  *
  */
-public class Elevator {
+public @Data class Elevator {
 
     private final int id;
     private AtomicInteger currentFloor;
@@ -41,10 +42,6 @@ public class Elevator {
         return currentFloor.get();
     }
 
-    public int getId() {
-        return id;
-    }
-
     public boolean isAvailable() {
         return isAvailable.get();
     }
@@ -59,14 +56,5 @@ public class Elevator {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Elevator{" +
-                "id=" + id +
-                ", currentFloor=" + currentFloor.get() +
-                ", isAvailable=" + isAvailable.get() +
-                '}';
     }
 }

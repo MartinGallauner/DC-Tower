@@ -1,5 +1,6 @@
 package service;
 
+import lombok.Data;
 import model.Elevator;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 
-public class ElevatorService {
+public  class ElevatorService {
 
     private static final int NUMBER_OF_ELEVATORS = 7;
     private static final int HIGHEST_FLOOR = 55;
