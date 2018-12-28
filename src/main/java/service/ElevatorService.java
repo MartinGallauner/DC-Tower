@@ -1,6 +1,5 @@
 package service;
 
-import lombok.Data;
 import model.Elevator;
 
 import java.util.ArrayList;
@@ -10,16 +9,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Provides the logic for the elevator simulation
- *
- * How the algorithm handles a request:
- * 1. The method "isRequestValid" verifies that the requested destination floor does exist.
- * 2.
- *
+ * Provides the logic/algorithm for the elevator simulation and updates the elevator states.
  */
 
 
-public  class ElevatorService {
+public class ElevatorService {
 
     private static final int NUMBER_OF_ELEVATORS = 7;
     private static final int HIGHEST_FLOOR = 55;
@@ -85,10 +79,8 @@ public  class ElevatorService {
     }
 
     /**
-     *
      * @param departureFloor The floor where the elevator is needed.
      * @return Returns the next available elevator next to the departure floor.
-     *
      */
     private Elevator searchBestElevator(int departureFloor) {
         Elevator elevator;

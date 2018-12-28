@@ -3,11 +3,11 @@ package service;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.TimeUnit;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-
 
 
 public class ElevatorServiceTest {
@@ -26,15 +26,14 @@ public class ElevatorServiceTest {
 
     @Test
     public void testCheckAvailableElevatorsNoRequest() {
-        //assertEquals(7, elevatorService.checkAvailableElevators());
-        assertThat(7, is(elevatorService.checkAvailableElevators()));
+        assertThat(elevatorService.checkAvailableElevators(), is(7));
     }
 
     @Test
     public void testElevatorServiceSingleRequest() {
         elevatorService.addRequest(0, 37);
         waitForIt();
-        assertThat(6, is(elevatorService.checkAvailableElevators()));
+        assertThat(elevatorService.checkAvailableElevators(), is(6));
     }
 
     @Test
@@ -42,7 +41,7 @@ public class ElevatorServiceTest {
         elevatorService.addRequest(5, 35);
         elevatorService.addRequest(35, 0);
         waitForIt();
-        assertThat(5, is(elevatorService.checkAvailableElevators()));
+        assertThat(elevatorService.checkAvailableElevators(), is(5));
     }
 
     @Test
@@ -57,7 +56,7 @@ public class ElevatorServiceTest {
         elevatorService.addRequest(14, 0);
         elevatorService.addRequest(40, 0);
         waitForIt();
-        assertThat(0, is(elevatorService.checkAvailableElevators()));
+        assertThat(elevatorService.checkAvailableElevators(), is(0));
     }
 
     @Test
@@ -67,7 +66,7 @@ public class ElevatorServiceTest {
         elevatorService.addRequest(-1, 19);
         elevatorService.addRequest(-99, 999);
         waitForIt();
-        assertThat(7, is(elevatorService.checkAvailableElevators()));
+        assertThat(elevatorService.checkAvailableElevators(), is(7));
     }
 
     private void waitForIt() {
