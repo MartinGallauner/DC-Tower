@@ -8,6 +8,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Provides the logic/algorithm for the elevator simulation and updates the elevator states.
+ */
+
 
 public class ElevatorService {
 
@@ -74,27 +78,31 @@ public class ElevatorService {
                 && destinationFloor <= HIGHEST_FLOOR;
     }
 
+    /**
+     * @param departureFloor The floor where the elevator is needed.
+     * @return Returns the next available elevator next to the departure floor.
+     */
     private Elevator searchBestElevator(int departureFloor) {
         Elevator elevator;
 
         do {
-            elevator = readyToGo(departureFloor);
+            elevator = readyToGo(departureFloor); //Is an elevator on this floor and available?
             if (elevator != null) {
                 return elevator;
             }
 
-            List<Elevator> availableElevators = getAvailableElevators();
+            List<Elevator> availableElevators = getAvailableElevators(); //Creates a list of all available elevators
             if (availableElevators.size() == 1) {
-                return availableElevators.get(0);
+                return availableElevators.get(0);   //If there is only 1 elevator available - take this one
             }
-
+            //Of all available elevators, which one is waiting closest?
             elevator = getClosestElevator(availableElevators, departureFloor);
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-        } while (elevator == null);
+        } while (elevator == null); // This search algorithm is repeated until it finds an elevator.
         return elevator;
     }
 
@@ -120,16 +128,18 @@ public class ElevatorService {
 
     private Elevator getClosestElevator(List<Elevator> availableElevators, int departureFloor) {
         Elevator closestElevator = null;
-        int bestDistance = HIGHEST_FLOOR + 1;
+        int bestDistance = HIGHEST_FLOOR + 1; //The highest possible distance between elevator and the departureFloor
 
         for (Elevator elevator : availableElevators) {
             int distance;
             int elevatorPosition = elevator.getCurrentFloor();
+            // This if/else statement calculates the actual distance between THIS elevator and the departureFloor
             if (elevatorPosition < departureFloor) {
                 distance = departureFloor - elevatorPosition;
             } else {
                 distance = elevatorPosition - departureFloor;
             }
+            //If this distance is lower than bestDistance - this distance is the new bestDistance
             if (distance < bestDistance) {
                 closestElevator = elevator;
                 bestDistance = distance;
